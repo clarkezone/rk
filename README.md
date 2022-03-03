@@ -1,5 +1,5 @@
 # rk
-Simple tool to refactor a Kubernetes manifest set into kustomize format.
+Simple tool to refactor a Kubernetes manifest set into kustomize format structured for dev, prod, release.
 
 This is WIP.
 
