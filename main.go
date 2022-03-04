@@ -14,8 +14,8 @@ import (
 func main() {
 	root := &cobra.Command{
 		Use:           fmt.Sprintf("%s COMMAND [ARG...]", "rk"),
-		Short:         "Okteto - Remote Development Environments powered by Kubernetes",
-		Long:          "Okteto - Remote Development Environments powered by Kubernetes",
+		Short:         "Refactoring for kubernetes kustomize manifests",
+		Long:          "Refactoring for kubernetes kustomize manifests",
 		SilenceErrors: true,
 		PersistentPreRun: func(ccmd *cobra.Command, args []string) {
 			ccmd.SilenceUsage = false
