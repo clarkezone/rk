@@ -21,3 +21,7 @@ latest:
 .PHONY: lint
 lint:
 	golangci-lint run
+
+.PHONY: precommit
+precommit:
+	pre-commit run --all-files
