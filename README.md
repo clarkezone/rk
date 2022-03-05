@@ -7,7 +7,9 @@ HELLOWORLD: minimal golang app with tests that compiles
 - [x] go package setup with folder structure, main, module init
 - [x] makefile, gitignore, dockerignore, editorconfig
 - [x] dummy refactor command using cobra including unit test
-- [x ] github actions for tests / linting targeting PR's
+- [x] github actions for tests / linting targeting PR's
+- [ ] go linting
+- [ ] all other linting
 - [ ] coveralls badge
 - [ ] Precommit
 - [ ] handle different log levels
