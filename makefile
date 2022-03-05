@@ -17,3 +17,7 @@ dep:
 .PHONY: latest
 latest:
 	echo ${VERSION_STRING} > bin/latest
+
+.PHONY: lint
+lint:
+	golangci-lint run

@@ -1,6 +1,9 @@
 package refactor
 
 // Refactor entrypoint
-func DoRefactor() string {
-	return "refactor"
+func DoRefactor(input string) string {
+	if input == "foo" {
+		return "refactor bar"
+	}
+	return "refactor nothing"
 }

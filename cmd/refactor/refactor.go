@@ -16,7 +16,7 @@ func Refactor() *cobra.Command {
 		Short: "fake command",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			_ = context.Background()
-			var val = refactorCMD.DoRefactor()
+			var val = refactorCMD.DoRefactor("dummy")
 			fmt.Printf("RUNNING: Refactor: %v\n", val)
 			return nil
 		},
