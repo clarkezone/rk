@@ -11,10 +11,10 @@ HELLOWORLD: minimal golang app with tests that compiles
 - [x] makefile, gitignore, dockerignore, editorconfig
 - [x] dummy refactor command using cobra including unit test
 - [x] github actions for tests / linting targeting PR's
-- [ ] go linting
-- [ ] all other linting
+- [x] go linting
+- [x] all other linting
 - [ ] coveralls badge
-- [ ] Precommit
+- [x] Precommit
 - [ ] handle different log levels
 
 MVP: take a non-kustomize manifest set and create a version using bases and
