@@ -1,5 +1,7 @@
 # rk
 
+[![Coverage Status](https://coveralls.io/repos/github/clarkezone/rk/badge.svg?branch=main)](https://coveralls.io/github/clarkezone/rk?branch=main)
+
 Simple tool to refactor a Kubernetes manifest set
 into kustomize format structured for dev, prod, release.
 
