@@ -15,7 +15,7 @@ HELLOWORLD: minimal golang app with tests that compiles
 - [x] github actions for tests / linting targeting PR's
 - [x] go linting
 - [x] all other linting
-- [ ] coveralls badge
+- [x] coveralls badge
 - [x] Precommit
 - [ ] handle different log levels
 
