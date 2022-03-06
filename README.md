@@ -19,13 +19,35 @@ HELLOWORLD: minimal golang app with tests that compiles
 - [x] Precommit
 - [ ] handle different log levels
 
-MVP: take a non-kustomize manifest set and create a version using bases and
+Scenario: take a non-kustomize manifest set and create a version using bases and
 overlays for dev, prod, staging in a namespace with an app set using
 crosscutting fields that renders correctly with `kubectl kustomize -k`
 
-1. Commandline app with 2 validated args: source folder, namespace
+1. `rk -makeoverlay dev, staging, prod -source .`
 2. Create basic folder structure
 3. move existing yaml files
 4. add missing kustomize files using golang templates
 
+Goal: Inner loop
+[x] setup .exe to point at actual thing we're trying to solve hard coded
+[x] setup input test dir
+[x] setup build command in make file
+[ ] setup UT infra: empty test, prep/clean, dirs
+[ ] build dir creation logic
+[ ] integration test that calls `kubectl kustomize ./`
+[ ] build manifest templated add logic
+[ ] verify against jekyll project
+[ ] verify on mac (switch to local)
+
+Goal: make UT pass for `DoMakeOverlay`
+Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
+
+# figure out
+
+1. how to get dir where cmd is running
+2. how to combine multiple cobra commands / switch structures
+3. how to test multiple cobra commands / switch structures
+4. how to return args in cobraCommand
+
+Backlog:
 CLEANUP existing manifests: strip redundant namespace fields
