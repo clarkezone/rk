@@ -13,11 +13,15 @@ HELLOWORLD: minimal golang app with tests that compiles
 - [x] makefile, gitignore, dockerignore, editorconfig
 - [x] dummy refactor command using cobra including unit test
 - [x] github actions for tests / linting targeting PR's
+- [x] enable coverage in VSCode UI
 - [x] go linting
 - [x] all other linting
 - [x] coveralls badge
 - [x] Precommit
 - [ ] handle different log levels
+- [ ] gate on codecoverage thresholds
+- [ ] converge CI build with make script
+- [ ] show build badges ()
 
 Scenario: take a non-kustomize manifest set and create a version using bases and
 overlays for dev, prod, staging in a namespace with an app set using
@@ -32,7 +36,7 @@ Goal: Inner loop
 [x] setup .exe to point at actual thing we're trying to solve hard coded
 [x] setup input test dir
 [x] setup build command in make file
-[ ] setup UT infra: empty test, prep/clean, dirs
+[x] setup UT infra: empty test, prep/clean, dirs
 [ ] build dir creation logic
 [ ] integration test that calls `kubectl kustomize ./`
 [ ] build manifest templated add logic
@@ -48,6 +52,8 @@ Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
 2. how to combine multiple cobra commands / switch structures
 3. how to test multiple cobra commands / switch structures
 4. how to return args in cobraCommand
+5. how to incorporate release into github action
+6. how to run integration test in GA or circleci
 
 Backlog:
 CLEANUP existing manifests: strip redundant namespace fields
