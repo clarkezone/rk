@@ -60,6 +60,7 @@ func Test_simple_inplace(t *testing.T) {
 	testtarget := t.TempDir()
 
 	cmd := exec.Command("cp", "-r", testsource+"/.", testtarget)
+	testsource = testtarget
 
 	_, err := cmd.CombinedOutput()
 	if err != nil {
