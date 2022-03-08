@@ -23,6 +23,7 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 
 	// create overlay dir in target
 	// foreach over overlays and create a dir for each one in target
+	// foreach overlays create a kustomize using golang template replacing
 	for _, ov := range overlayList {
 		thisol := path.Join(targetDir, "overlay", ov)
 		err = os.MkdirAll(thisol, 0755)
@@ -35,7 +36,6 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 		doTemplate(manifest, ov, "gitea")
 	}
 
-	// foreach overlays create a kustomize using golang template replacing
 	// move (only) yaml files from source into base
 	// add missing kustomize files using golang template
 	//  overlay specific details from overlay list
