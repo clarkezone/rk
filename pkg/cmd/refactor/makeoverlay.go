@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"log"
 	"os"
 	"path"
 	"path/filepath"
@@ -139,6 +140,9 @@ bases:
 func copyDir(source string, dest string, move bool) error {
 	var s *stack.Stack = stack.New()
 	err := filepath.Walk(source, func(walkSource string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Printf("Error entering walk %v", err.Error())
+		}
 		isMovedPath, err := filepath.Rel(walkSource, dest)
 		if err != nil {
 			return err
