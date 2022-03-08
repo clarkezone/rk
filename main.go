@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	refactorCMD.MakeOverlay()
+	refactorCMD.MakeOverlay().Execute()
 
 	//	root := &cobra.Command{
 	//		Use:           fmt.Sprintf("%s COMMAND [ARG...]", "rk"),

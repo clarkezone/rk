@@ -53,10 +53,16 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 		}
 
 		manifest := path.Join(thisol, "kustomization.yaml")
-		err = doTemplate(manifest, ov, "gitea")
+		err = writeOverlayKustTemplate(manifest, ov, "gitea")
 		if err != nil {
 			return err
 		}
+	}
+
+	rootKustomize := path.Join(targetDir, "kustomization.yaml")
+	err = writeRootKustTemplate(rootKustomize, overlayList)
+	if err != nil {
+		return err
 	}
 
 	// add missing kustomize files using golang template
@@ -87,7 +93,7 @@ type tempargs struct {
 	NameSpace  string
 }
 
-func doTemplate(path string, np string, ns string) error {
+func writeOverlayKustTemplate(path string, np string, ns string) error {
 	args := tempargs{NamePrefix: np, NameSpace: ns}
 	templ := `namePrefix: {{.NamePrefix}}-
 namespace: {{.NameSpace}}
@@ -104,6 +110,26 @@ bases:
 	}
 
 	err = t.Execute(file, args)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func writeRootKustTemplate(path string, overlays []string) error {
+	templ := `
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+overlays:
+{{range $val := .}}- overlay/{{$val}}{{end}}`
+	t := template.Must(template.New("yaml-overlay").Parse(templ))
+
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+
+	err = t.Execute(file, overlays)
 	if err != nil {
 		return err
 	}
