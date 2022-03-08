@@ -117,11 +117,11 @@ bases:
 }
 
 func writeRootKustTemplate(path string, overlays []string) error {
-	templ := `
-apiVersion: kustomize.config.k8s.io/v1beta1
+	templ := `apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-overlays:
-{{range $val := .}}- overlay/{{$val}}{{end}}`
+bases:
+{{range $val := .}}- overlay/{{$val}}
+{{end}}`
 	t := template.Must(template.New("yaml-overlay").Parse(templ))
 
 	file, err := os.Create(path)
