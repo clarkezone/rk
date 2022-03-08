@@ -33,7 +33,10 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 		}
 
 		manifest := path.Join(thisol, "kustomization.yaml")
-		doTemplate(manifest, ov, "gitea")
+		err = doTemplate(manifest, ov, "gitea")
+		if err != nil {
+			return err
+		}
 	}
 
 	// move (only) yaml files from source into base
