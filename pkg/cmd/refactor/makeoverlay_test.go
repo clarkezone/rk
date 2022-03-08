@@ -79,6 +79,8 @@ func Test_simple(t *testing.T) {
 	if err != nil {
 		t.Errorf("Expected error not returned")
 	}
+
+	//TODO verify kustomize manifests present and correct
 }
 
 func Test_simple_inplace(t *testing.T) {
@@ -125,6 +127,7 @@ func Test_simple_inplace(t *testing.T) {
 		t.Errorf("Expected error not returned")
 	}
 
+	//TODO verify kustomize manifests present and correct
 }
 
 func setup() {
