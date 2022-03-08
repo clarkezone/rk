@@ -53,6 +53,32 @@ func Test_simple(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test fail %v", err)
 	}
+
+	files, err := ioutil.ReadDir(testtarget)
+	if len(files) != 2 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	basepath := path.Join(testtarget, "base")
+	files, err = ioutil.ReadDir(basepath)
+	if len(files) != 4 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	overlaypath := path.Join(testtarget, "overlay")
+	files, err = ioutil.ReadDir(overlaypath)
+	if len(files) != 3 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
 }
 
 func Test_simple_inplace(t *testing.T) {
@@ -72,6 +98,33 @@ func Test_simple_inplace(t *testing.T) {
 	if err != nil {
 		t.Errorf("Test fail %v", err)
 	}
+
+	files, err := ioutil.ReadDir(testsource)
+	if len(files) != 2 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	basepath := path.Join(testsource, "base")
+	files, err = ioutil.ReadDir(basepath)
+	if len(files) != 4 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	overlaypath := path.Join(testsource, "overlay")
+	files, err = ioutil.ReadDir(overlaypath)
+	if len(files) != 3 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
 }
 
 func setup() {
@@ -85,18 +138,17 @@ func setup() {
 	git_root = strings.TrimSuffix(git_root, "\n")
 }
 
-/* func Test_copyFile(t *testing.T) {
+func Test_copyFile(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize/deployment.yaml")
 	testtarget := t.TempDir()
+	testtarget = path.Join(testtarget, "deployment.yaml")
 	err := copyFile(testsource, testtarget)
 	if err != nil {
 		t.Errorf("Test fail %v", err)
 	}
 
-	fullDestPath := path.Join(testtarget, path.Base(testsource))
-
 	sourceStat, _ := os.Stat(testsource)
-	destStat, _ := os.Stat(fullDestPath)
+	destStat, _ := os.Stat(testtarget)
 	sourceSize := sourceStat.Size()
 	destSize := destStat.Size()
 
@@ -104,16 +156,16 @@ func setup() {
 		t.Errorf("copied file sizes didn't match %v, %v\n", sourceSize, destSize)
 	}
 
-	err = copyFile("foo", "bar")
+	err = copyFile("", "bar")
 	if err == nil {
 		t.Errorf("Expected error not returned")
 	}
 
-	err = copyFile(testsource, "bar")
+	err = copyFile(testsource, "")
 	if err == nil {
 		t.Errorf("Expected error not returned")
 	}
-} */
+}
 
 func Test_copyDir(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
