@@ -35,6 +35,13 @@ func Test_ValidateArgs(t *testing.T) {
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
+
+	//TODO how to make path.Join fail
+	badsource := path.Join(testsource, strings.Repeat("ssssssssssssssssssssssssss", 400))
+	err = DoMakeOverlay(badsource, []string{}, testtarget)
+	if err == nil {
+		t.Error("Arg validation incorrect")
+	}
 }
 
 func Test_simple(t *testing.T) {
