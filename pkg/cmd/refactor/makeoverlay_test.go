@@ -1,6 +1,7 @@
 package refactor
 
 import (
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -54,6 +55,24 @@ func Test_simple(t *testing.T) {
 	}
 }
 
+func Test_simple_inplace(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	testtarget := t.TempDir()
+
+	cmd := exec.Command("cp", "-r", testsource+"/.", testtarget)
+
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Errorf("Failed")
+	}
+
+	overlays := []string{"dev", "stagig", "prod"}
+	err = DoMakeOverlay(testsource, overlays, testsource)
+	if err != nil {
+		t.Errorf("Test fail %v", err)
+	}
+}
+
 func setup() {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 
@@ -63,6 +82,98 @@ func setup() {
 	}
 	git_root = string(output)
 	git_root = strings.TrimSuffix(git_root, "\n")
+}
+
+/* func Test_copyFile(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize/deployment.yaml")
+	testtarget := t.TempDir()
+	err := copyFile(testsource, testtarget)
+	if err != nil {
+		t.Errorf("Test fail %v", err)
+	}
+
+	fullDestPath := path.Join(testtarget, path.Base(testsource))
+
+	sourceStat, _ := os.Stat(testsource)
+	destStat, _ := os.Stat(fullDestPath)
+	sourceSize := sourceStat.Size()
+	destSize := destStat.Size()
+
+	if sourceSize != destSize {
+		t.Errorf("copied file sizes didn't match %v, %v\n", sourceSize, destSize)
+	}
+
+	err = copyFile("foo", "bar")
+	if err == nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	err = copyFile(testsource, "bar")
+	if err == nil {
+		t.Errorf("Expected error not returned")
+	}
+} */
+
+func Test_copyDir(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	testtarget := t.TempDir()
+	err := copyDir(testsource, testtarget, false)
+
+	if err != nil {
+		t.Errorf("Test fail %v", err)
+	}
+
+	files, err := ioutil.ReadDir(testtarget)
+	if len(files) != 4 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	//TODO.. test scenario with hierarchical source files
+	//TODO.. tree walk to ensure structure is correct
+}
+
+func Test_copy_inplace(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	testtarget := t.TempDir()
+
+	cmd := exec.Command("cp", "-r", testsource+"/.", testtarget)
+
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Errorf("Failed")
+	}
+
+	testsource = testtarget
+	testtarget = path.Join(testsource, "moved")
+
+	err = os.Mkdir(testtarget, 0755)
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	err = copyDir(testsource, testtarget, true)
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	files, err := ioutil.ReadDir(testtarget)
+	if len(files) != 4 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
+
+	files, err = ioutil.ReadDir(testsource)
+	if len(files) != 1 {
+		t.Errorf("Target file count is wrong")
+	}
+	if err != nil {
+		t.Errorf("Expected error not returned")
+	}
 }
 
 func shutdown() {

@@ -3,8 +3,12 @@ package refactor
 import (
 	"fmt"
 	"html/template"
+	"io"
 	"os"
 	"path"
+	"path/filepath"
+
+	"github.com/golang-collections/collections/stack"
 )
 
 func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) error {
@@ -14,9 +18,25 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 		return returnValue
 	}
 
+	match, err := filepath.Rel(sourceDir, targetDir)
+	if err != nil {
+		return err
+	}
+
+	var inplace = false
+	if match == "." {
+		inplace = true
+	}
+
 	// create base dir in target
 	base := path.Join(targetDir, "base")
-	err := os.MkdirAll(base, 0755)
+	err = os.MkdirAll(base, 0755)
+	if err != nil {
+		return err
+	}
+
+	// move (only) yaml files from source into base
+	err = copyDir(targetDir, base, inplace)
 	if err != nil {
 		return err
 	}
@@ -39,7 +59,6 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 		}
 	}
 
-	// move (only) yaml files from source into base
 	// add missing kustomize files using golang template
 	//  overlay specific details from overlay list
 
@@ -89,4 +108,71 @@ bases:
 		return err
 	}
 	return nil
+}
+
+func copyDir(source string, dest string, move bool) error {
+	var s *stack.Stack = stack.New()
+	err := filepath.Walk(source, func(walkSource string, info os.FileInfo, err error) error {
+		isMovedPath, err := filepath.Rel(walkSource, dest)
+		if err != nil {
+			return err
+		}
+
+		// When moving, skip anything that is in the destination directory
+		if move && isMovedPath == ".." {
+			return nil
+		}
+		if !info.IsDir() {
+			relPath, err := filepath.Rel(source, walkSource)
+			if err != nil {
+				return err
+			}
+
+			walkTarget := path.Join(dest, relPath)
+			err = copyFile(walkSource, walkTarget)
+			if err != nil {
+				return err
+			}
+
+			if move {
+				s.Push(walkSource)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	//Delete items
+	for s.Len() > 0 {
+		delete := s.Pop()
+		str := fmt.Sprintf("%v", delete)
+		err = os.Remove(string(str))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func copyFile(source string, dest string) error {
+	from, err := os.Open(source)
+	if err != nil {
+		return err
+	}
+	defer from.Close()
+
+	//destNamedPath := path.Base(source)
+	//destNamedPath = path.Join(dest, destNamedPath)
+
+	to, err := os.Create(dest)
+	if err != nil {
+		return err
+	}
+	defer to.Close()
+
+	_, err = io.Copy(to, from)
+
+	return err
 }
