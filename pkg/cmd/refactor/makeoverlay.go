@@ -4,15 +4,18 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"io/fs"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
 
 	"github.com/golang-collections/collections/stack"
+	. "sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
-func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) error {
+func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, namespace string) error {
 
 	shouldReturn, returnValue := validateArgs(sourceDir, targetDir, overlayList)
 	if shouldReturn {
@@ -54,7 +57,7 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 		}
 
 		manifest := path.Join(thisol, "kustomization.yaml")
-		err = writeOverlayKustTemplate(manifest, ov, "gitea")
+		err = writeOverlayKustTemplate(manifest, ov, namespace)
 		if err != nil {
 			return err
 		}
@@ -66,10 +69,11 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string) err
 		return err
 	}
 
-	// add missing kustomize files using golang template
-	//  overlay specific details from overlay list
+	baseKust := path.Join(targetDir, "base", "kustomization.yaml")
 
-	return nil
+	err = editKustomize(namespace, baseKust)
+
+	return err
 }
 
 func validateArgs(sourceDir string, targetDir string, overlayList []string) (bool, error) {
@@ -203,6 +207,34 @@ func copyFile(source string, dest string) error {
 	defer to.Close()
 
 	_, err = io.Copy(to, from)
+
+	return err
+}
+
+func editKustomize(ns string, f string) error {
+	bytes, err := ioutil.ReadFile(f)
+
+	if err != nil {
+		return err
+	}
+
+	obj, err := Parse(string(bytes))
+	if err != nil {
+		return err
+	}
+	_, err = obj.Pipe(SetField("namespace", NewScalarRNode(ns)))
+	if err != nil {
+		return err
+	}
+
+	resstr, err := obj.String()
+	if err != nil {
+		return err
+	}
+
+	bytes = []byte(resstr)
+
+	err = ioutil.WriteFile(f, bytes, fs.FileMode(0644))
 
 	return err
 }

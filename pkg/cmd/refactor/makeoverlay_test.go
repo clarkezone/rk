@@ -22,24 +22,24 @@ func Test_ValidateArgs(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	testtarget := t.TempDir()
 
-	err := DoMakeOverlay("", []string{}, "")
+	err := DoMakeOverlay("", []string{}, "", "ns")
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
 
-	err = DoMakeOverlay(testsource, []string{}, "")
+	err = DoMakeOverlay(testsource, []string{}, "", "ns")
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
 
-	err = DoMakeOverlay(testsource, []string{}, testtarget)
+	err = DoMakeOverlay(testsource, []string{}, testtarget, "ns")
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
 
 	//TODO how to make path.Join fail
 	badsource := path.Join(testsource, strings.Repeat("ssssssssssssssssssssssssss", 400))
-	err = DoMakeOverlay(badsource, []string{}, testtarget)
+	err = DoMakeOverlay(badsource, []string{}, testtarget, "ns")
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
@@ -49,13 +49,13 @@ func Test_simple(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	testtarget := t.TempDir()
 	overlays := []string{"dev", "stagig", "prod"}
-	err := DoMakeOverlay(testsource, overlays, testtarget)
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
 	if err != nil {
 		t.Errorf("Test fail %v", err)
 	}
 
 	files, err := ioutil.ReadDir(testtarget)
-	if len(files) != 2 {
+	if len(files) != 3 {
 		t.Errorf("Target file count is wrong")
 	}
 	if err != nil {
@@ -96,13 +96,13 @@ func Test_simple_inplace(t *testing.T) {
 	}
 
 	overlays := []string{"dev", "stagig", "prod"}
-	err = DoMakeOverlay(testsource, overlays, testsource)
+	err = DoMakeOverlay(testsource, overlays, testsource, "ns")
 	if err != nil {
 		t.Errorf("Test fail %v", err)
 	}
 
 	files, err := ioutil.ReadDir(testsource)
-	if len(files) != 2 {
+	if len(files) != 3 {
 		t.Errorf("Target file count is wrong")
 	}
 	if err != nil {
