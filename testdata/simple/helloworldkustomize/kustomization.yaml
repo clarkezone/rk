@@ -1,9 +1,3 @@
 resources:
   - deployment.yaml
   - service.yaml
-  - html.yaml
-
-configMapGenerator:
-  - name: html3
-    files:
-      - configs/html3.html #this is raw file

@@ -64,7 +64,7 @@ func Test_simple(t *testing.T) {
 
 	basepath := path.Join(testtarget, "base")
 	files, err = ioutil.ReadDir(basepath)
-	if len(files) != 4 {
+	if len(files) != 3 {
 		t.Errorf("Target file count is wrong")
 	}
 	if err != nil {
@@ -84,19 +84,7 @@ func Test_simple(t *testing.T) {
 }
 
 func Test_simple_inplace(t *testing.T) {
-	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
-	testtarget := t.TempDir()
-
-	cmd := exec.Command("cp", "-r", testsource+"/.", testtarget)
-	testsource = testtarget
-
-	_, err := cmd.CombinedOutput()
-	if err != nil {
-		t.Errorf("Failed")
-	}
-
-	overlays := []string{"dev", "stagig", "prod"}
-	err = DoMakeOverlay(testsource, overlays, testsource, "ns")
+	testsource, err := SimpleTest(t, git_root)
 	if err != nil {
 		t.Errorf("Test fail %v", err)
 	}
@@ -111,7 +99,7 @@ func Test_simple_inplace(t *testing.T) {
 
 	basepath := path.Join(testsource, "base")
 	files, err = ioutil.ReadDir(basepath)
-	if len(files) != 4 {
+	if len(files) != 3 {
 		t.Errorf("Target file count is wrong")
 	}
 	if err != nil {
@@ -180,7 +168,7 @@ func Test_copyDir(t *testing.T) {
 	}
 
 	files, err := ioutil.ReadDir(testtarget)
-	if len(files) != 4 {
+	if len(files) != 3 {
 		t.Errorf("Target file count is wrong")
 	}
 	if err != nil {
@@ -216,7 +204,7 @@ func Test_copy_inplace(t *testing.T) {
 	}
 
 	files, err := ioutil.ReadDir(testtarget)
-	if len(files) != 4 {
+	if len(files) != 3 {
 		t.Errorf("Target file count is wrong")
 	}
 	if err != nil {
