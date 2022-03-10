@@ -33,6 +33,7 @@ crosscutting fields that renders correctly with `kubectl kustomize -k`
 4. add missing kustomize files using golang templates
 
 Goal: Inner loop
+
 - [x] setup .exe to point at actual thing we're trying to solve hard coded
 - [x] setup input test dir
 - [x] setup build command in make file
