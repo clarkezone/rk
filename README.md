@@ -33,18 +33,20 @@ crosscutting fields that renders correctly with `kubectl kustomize -k`
 4. add missing kustomize files using golang templates
 
 Goal: Inner loop
-[x] setup .exe to point at actual thing we're trying to solve hard coded
-[x] setup input test dir
-[x] setup build command in make file
-[x] setup UT infra: empty test, prep/clean, dirs
-[ ] build dir creation logic
-[ ] integration test that calls `kubectl kustomize ./`
-[ ] build manifest templated add logic
-[ ] verify against jekyll project
-[ ] verify on mac (switch to local)
+- [x] setup .exe to point at actual thing we're trying to solve hard coded
+- [x] setup input test dir
+- [x] setup build command in make file
+- [x] setup UT infra: empty test, prep/clean, dirs
+- [x] build dir creation logic
+- [x] integration test that calls `kubectl kustomize ./`
+- [x] build manifest templated add logic
+- [x] verify against jekyll project
+- [ ] verify on mac (switch to local)
 
-Goal: make UT pass for `DoMakeOverlay`
-Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
+- [x] Goal: make UT pass for `DoMakeOverlay`
+- [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
+- [ ] Goal: get CD using same matrixed build versions
+- [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
 
 # figure out
 
