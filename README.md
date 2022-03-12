@@ -63,4 +63,6 @@ Goal: Inner loop
 6. how to run integration test in GA or circleci
 
 Backlog:
+If there is a namespace file used to create namespace, patch that with passed in namespace
+If there is no namespace file, createone
 CLEANUP existing manifests: strip redundant namespace fields
