@@ -46,6 +46,10 @@ Goal: Inner loop
 
 - [x] Goal: make UT pass for `DoMakeOverlay`
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
+- [ ] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
+- [ ] write two patch files into overlay directory (set memory, increase replicas)
+- [ ] Add commented out reference in respective overlay folder
+
 - [ ] Goal: get CD using same matrixed build versions
 - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
 
