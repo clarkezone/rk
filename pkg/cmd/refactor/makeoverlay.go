@@ -56,15 +56,18 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 			return err
 		}
 
-		manifest := path.Join(thisol, "kustomization.yaml")
-		err = writeOverlayKustTemplate(manifest, ov, namespace)
+		err = writeOverlayKustTemplate(thissol, ov, namespace)
+		if err != nil {
+			return err
+		}
+		pname := findPrimaryName()
+		err = writeIncreaseReplicas(thissol, ov, pname)
 		if err != nil {
 			return err
 		}
 	}
 
-	rootKustomize := path.Join(targetDir, "kustomization.yaml")
-	err = writeRootKustTemplate(rootKustomize, overlayList)
+	err = writeRootKustTemplate(targetDir, overlayList)
 	if err != nil {
 		return err
 	}
@@ -98,7 +101,8 @@ type tempargs struct {
 	NameSpace  string
 }
 
-func writeOverlayKustTemplate(path string, np string, ns string) error {
+func writeOverlayKustTemplate(np string, ns string) error {
+        manifestPath := path.Join(thisol, "kustomization.yaml")
 	args := tempargs{NamePrefix: np, NameSpace: ns}
 	templ := `namePrefix: {{.NamePrefix}}-
 namespace: {{.NameSpace}}
@@ -108,20 +112,25 @@ bases:
 - ../../base
 `
 	t := template.Must(template.New("yaml-overlay").Parse(templ))
+	writeTemplate(manifestPath, t, args)
 
-	file, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-
-	err = t.Execute(file, args)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
-func writeRootKustTemplate(path string, overlays []string) error {
+func writeIncreaseReplicas(parentPath string, pname string) error {
+	manifestPath := path.Join(parentPath, "increase_replicas.yaml")
+	templ := `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.}}
+spec:
+  replicas: 3
+`
+	t :=  template.Must(template.New("yaml-increasereplicas").Parse(templ))
+	return writeTemplate(manifestPath, t, pname))
+}
+
+func writeRootKustTemplate(parentPath string, overlays []string) error {
+	manifestPath := path.Join(parentPath, "kustomization.yaml")
 	templ := `apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 bases:
@@ -129,16 +138,27 @@ bases:
 {{end}}`
 	t := template.Must(template.New("yaml-overlay").Parse(templ))
 
+	return writeTemplate(manifestPath, t, overlays)
+}
+
+func writeTemplate(path string, t Template, object interface{}) error {
 	file, err := os.Create(path)
 	if err != nil {
 		return err
 	}
 
-	err = t.Execute(file, overlays)
+	err = t.Execute(file, object)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func findPrimaryName() string {
+	//TODO: iterate over all manifests in base
+	// find deployment, daemonset, statefulset
+	// lookup name metadata
+	return "jekyllbuilder"
 }
 
 func copyDir(source string, dest string, move bool) error {
