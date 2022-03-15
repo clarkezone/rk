@@ -56,12 +56,12 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 			return err
 		}
 
-		err = writeOverlayKustTemplate(thissol, ov, namespace)
+		err = writeOverlayKustTemplate(thisol, ov, namespace)
 		if err != nil {
 			return err
 		}
 		pname := findPrimaryName()
-		err = writeIncreaseReplicas(thissol, ov, pname)
+		err = writeIncreaseReplicas(thisol, pname)
 		if err != nil {
 			return err
 		}
@@ -101,8 +101,8 @@ type tempargs struct {
 	NameSpace  string
 }
 
-func writeOverlayKustTemplate(np string, ns string) error {
-        manifestPath := path.Join(thisol, "kustomization.yaml")
+func writeOverlayKustTemplate(parentPath string, np string, ns string) error {
+	manifestPath := path.Join(parentPath, "kustomization.yaml")
 	args := tempargs{NamePrefix: np, NameSpace: ns}
 	templ := `namePrefix: {{.NamePrefix}}-
 namespace: {{.NameSpace}}
@@ -112,8 +112,8 @@ bases:
 - ../../base
 `
 	t := template.Must(template.New("yaml-overlay").Parse(templ))
-	writeTemplate(manifestPath, t, args)
-
+	err := writeTemplate(manifestPath, t, args)
+	return err
 }
 
 func writeIncreaseReplicas(parentPath string, pname string) error {
@@ -125,8 +125,8 @@ metadata:
 spec:
   replicas: 3
 `
-	t :=  template.Must(template.New("yaml-increasereplicas").Parse(templ))
-	return writeTemplate(manifestPath, t, pname))
+	t := template.Must(template.New("yaml-increasereplicas").Parse(templ))
+	return writeTemplate(manifestPath, t, pname)
 }
 
 func writeRootKustTemplate(parentPath string, overlays []string) error {
@@ -141,7 +141,7 @@ bases:
 	return writeTemplate(manifestPath, t, overlays)
 }
 
-func writeTemplate(path string, t Template, object interface{}) error {
+func writeTemplate(path string, t *template.Template, object interface{}) error {
 	file, err := os.Create(path)
 	if err != nil {
 		return err
