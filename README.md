@@ -45,13 +45,20 @@ Goal: Inner loop
 - [ ] verify on mac (switch to local)
 
 - [x] Goal: make UT pass for `DoMakeOverlay`
-- [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
-- [ ] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
-- [ ] write two patch files into overlay directory (set memory, increase replicas)
-- [ ] Add commented out reference in respective overlay folder
 
-- [ ] Goal: get CD using same matrixed build versions
-- [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
+- [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
+  - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
+  - [x] write patch file into overlay directory (increase replicas)
+  - [ ] write patch file into overlay directory (set memory for all containers)
+  - [ ] Add commented out reference in respective overlay folder
+  - [ ] implement functions to get deployment name and container names from manifests
+  - [ ] write unit test for function to get deployment and container names
+  - [ ] implement function to strip namespaces from original manifests
+  - [ ] write unit test for namespace stripping with yaml comparison with known failure case
+  - [ ] write unit test for MakeOverlay that compares output with known good yaml
+
+  - [ ] Goal: get CD using same matrixed build versions
+  - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
 
 # figure out
 
