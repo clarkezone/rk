@@ -47,6 +47,7 @@ Goal: Inner loop
 - [x] Goal: make UT pass for `DoMakeOverlay`
 
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
+
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
   - [x] write patch file into overlay directory (increase replicas)
   - [ ] write patch file into overlay directory (set memory for all containers)
