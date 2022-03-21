@@ -47,15 +47,20 @@ Goal: Inner loop
 - [x] Goal: make UT pass for `DoMakeOverlay`
 
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
+
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
   - [x] write patch file into overlay directory (increase replicas)
-  - [ ] write patch file into overlay directory (set memory for all containers)
+  - [x] write patch file into overlay directory (set memory for all containers)
+  - [ ] update integration test to test overlays
+    - [ ] Helper to call dyff library using source and dest path for single file compare
+    - [ ] Helper to recurse of tree calling above
+    - [ ] call integration test in CI build
   - [ ] Add commented out reference in respective overlay folder
   - [ ] implement functions to get deployment name and container names from manifests
   - [ ] write unit test for function to get deployment and container names
   - [ ] implement function to strip namespaces from original manifests
   - [ ] write unit test for namespace stripping with yaml comparison with known failure case
-  - [ ] write unit test for MakeOverlay that compares output with known good yaml
+  - [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
 
   - [ ] Goal: get CD using same matrixed build versions
   - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
