@@ -65,6 +65,11 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 		if err != nil {
 			return err
 		}
+		containernames := findContainerNames()
+		err = writeMemoryLimits(thisol, pname, containernames)
+		if err != nil {
+			return err
+		}
 	}
 
 	err = writeRootKustTemplate(targetDir, overlayList)
@@ -129,6 +134,31 @@ spec:
 	return writeTemplate(manifestPath, t, pname)
 }
 
+type memlimits struct {
+	DeploymentName string
+	ContainerNames []string
+}
+
+func writeMemoryLimits(parentPath string, deploymentName string, containerNames []string) error {
+	foo := memlimits{deploymentName, containerNames}
+	manifestPath := path.Join(parentPath, "set_memory_limits.yaml")
+	templ := `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.DeploymentName}}
+spec:
+  template:
+    spec:
+      containers:
+{{range $val := .ContainerNames}}        - name: {{$val}}
+        resources:
+          limits:
+            memory: 512Mi
+{{end}}`
+	t := template.Must(template.New("yaml-set-memorylimits").Parse(templ))
+	return writeTemplate(manifestPath, t, foo)
+}
+
 func writeRootKustTemplate(parentPath string, overlays []string) error {
 	manifestPath := path.Join(parentPath, "kustomization.yaml")
 	templ := `apiVersion: kustomize.config.k8s.io/v1beta1
@@ -159,6 +189,13 @@ func findPrimaryName() string {
 	// find deployment, daemonset, statefulset
 	// lookup name metadata
 	return "jekyllbuilder"
+}
+
+func findContainerNames() []string {
+	//TODO: iterate over all manifests in base
+	// find deployment, daemonset, statefulset
+	// lookup name metadata
+	return []string{"blog-serve"}
 }
 
 func copyDir(source string, dest string, move bool) error {
