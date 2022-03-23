@@ -48,6 +48,7 @@ func Test_ValidateArgs(t *testing.T) {
 func Test_simple(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	testtarget := t.TempDir()
+	correctOutput := path.Join(git_root, "testdata/correctoutput/Test_simple/001")
 	overlays := []string{"dev", "stagig", "prod"}
 	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
 	if err != nil {
@@ -80,7 +81,13 @@ func Test_simple(t *testing.T) {
 		t.Errorf("Expected error not returned")
 	}
 
-	//TODO verify kustomize manifests present and correct
+	testInput := path.Join(testsource, "kustomize.yaml")
+	testOutput := path.Join(correctOutput, "kustomize.yaml")
+	//TODO dyfrecurse over correct
+	err = dyffFiles(testInput, testOutput)
+	if err != nil {
+		t.Errorf("Test output doesn't match %v", err)
+	}
 }
 
 func Test_simple_inplace(t *testing.T) {
@@ -116,6 +123,11 @@ func Test_simple_inplace(t *testing.T) {
 	}
 
 	//TODO verify kustomize manifests present and correct
+}
+
+func dyffFiles(input string, output string) error {
+	//TODO if output doesn't exist, fail
+	return nil
 }
 
 func setup() {
