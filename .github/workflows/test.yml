@@ -45,6 +45,8 @@ jobs:
           go-version: 1.17.x
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: install compare tool
+        run: go install github.com/homeport/dyff/cmd/dyff@latest
       - name: Calc coverage
         run: |
           go test -race -covermode atomic -coverprofile=covprofile ./...
