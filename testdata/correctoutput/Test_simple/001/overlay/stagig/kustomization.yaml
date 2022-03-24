@@ -1,0 +1,6 @@
+namePrefix: stagig-
+namespace: ns
+commonLabels:
+  environment: development
+bases:
+  - ../../base

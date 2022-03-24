@@ -1,6 +1,7 @@
 package refactor
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -81,8 +82,8 @@ func Test_simple(t *testing.T) {
 		t.Errorf("Expected error not returned")
 	}
 
-	testInput := path.Join(testsource, "kustomize.yaml")
-	testOutput := path.Join(correctOutput, "kustomize.yaml")
+	testInput := path.Join(testtarget, "base/kustomization.yaml")
+	testOutput := path.Join(correctOutput, "/base/kustomization.yaml")
 	//TODO dyfrecurse over correct
 	err = dyffFiles(testInput, testOutput)
 	if err != nil {
@@ -131,7 +132,7 @@ func dyffFiles(input string, outputPath string) error {
 
 	_, err := cmd.CombinedOutput()
 	if err != nil {
-		panic("file didn't match")
+		return fmt.Errorf("dyff validation vailed files didn't match %v", err)
 	}
 	return nil
 }
