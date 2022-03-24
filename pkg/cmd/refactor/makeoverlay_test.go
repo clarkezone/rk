@@ -125,8 +125,14 @@ func Test_simple_inplace(t *testing.T) {
 	//TODO verify kustomize manifests present and correct
 }
 
-func dyffFiles(input string, output string) error {
-	//TODO if output doesn't exist, fail
+func dyffFiles(input string, outputPath string) error {
+	//TODO: verify success and failure cases
+	cmd := exec.Command("dyff", "between", input, outputPath)
+
+	_, err := cmd.CombinedOutput()
+	if err != nil {
+		panic("file didn't match")
+	}
 	return nil
 }
 
