@@ -3,9 +3,11 @@ package refactor
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -146,6 +148,38 @@ func setup() {
 	}
 	git_root = string(output)
 	git_root = strings.TrimSuffix(git_root, "\n")
+}
+
+func compareTree(source string, dest string) error {
+	err := filepath.Walk(source, func(walkSource string, info os.FileInfo, err error) error {
+		if err != nil {
+			log.Printf("Error entering walk %v", err.Error())
+		}
+		_, err = filepath.Rel(walkSource, dest)
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			relPath, err := filepath.Rel(source, walkSource)
+			if err != nil {
+				return err
+			}
+
+			_ = path.Join(dest, relPath)
+
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Test_compareTree(t *testing.T) {
+
 }
 
 func Test_copyFile(t *testing.T) {
