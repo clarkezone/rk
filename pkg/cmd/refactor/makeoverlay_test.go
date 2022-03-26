@@ -84,6 +84,8 @@ func Test_simple(t *testing.T) {
 		t.Errorf("Expected error not returned")
 	}
 
+	compareTree(testtarget, correctOutput)
+
 	testInput := path.Join(testtarget, "base/kustomization.yaml")
 	testOutput := path.Join(correctOutput, "/base/kustomization.yaml")
 	//TODO dyfrecurse over correct
@@ -152,6 +154,7 @@ func setup() {
 
 func compareTree(source string, dest string) error {
 	err := filepath.Walk(source, func(walkSource string, info os.FileInfo, err error) error {
+		//fmt.Printf("Walk: %v ", walkSource)
 		if err != nil {
 			log.Printf("Error entering walk %v", err.Error())
 		}
@@ -166,9 +169,11 @@ func compareTree(source string, dest string) error {
 				return err
 			}
 
-			_ = path.Join(dest, relPath)
-
+			destFull := path.Join(dest, relPath)
+			areEqual := dyffFiles(walkSource, destFull)
+			fmt.Printf("Good:%v dest %v", areEqual == nil, destFull)
 		}
+		fmt.Println("")
 		return nil
 	})
 	if err != nil {
