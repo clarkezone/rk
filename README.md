@@ -52,7 +52,7 @@ Goal: Inner loop
   - [x] write patch file into overlay directory (increase replicas)
   - [x] write patch file into overlay directory (set memory for all containers)
   - [ ] update integration test to test overlays
-    - [ ] Helper to call dyff library using source and dest path for single file compare
+    - [x] Helper to call dyff library using source and dest path for single file compare
     - [ ] Helper to recurse of tree calling above
     - [ ] call integration test in CI build
   - [ ] Add commented out reference in respective overlay folder
