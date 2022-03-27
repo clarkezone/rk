@@ -150,7 +150,7 @@ spec:
   template:
     spec:
       containers:
-{{range $val := .ContainerNames}}        - name: {{$val}}
+{{range $val := .ContainerNames}}      - name: {{$val}}
         resources:
           limits:
             memory: 512Mi

@@ -153,6 +153,8 @@ func setup() {
 }
 
 func compareTree(source string, dest string) error {
+	somethingFailed := false
+	// run with go test -v -run Test_simple called from the correct dir
 	err := filepath.Walk(source, func(walkSource string, info os.FileInfo, err error) error {
 		//fmt.Printf("Walk: %v ", walkSource)
 		if err != nil {
@@ -171,13 +173,21 @@ func compareTree(source string, dest string) error {
 
 			destFull := path.Join(dest, relPath)
 			areEqual := dyffFiles(walkSource, destFull)
-			fmt.Printf("Good:%v dest %v", areEqual == nil, destFull)
+			fmt.Printf("Good:%v dest %v", areEqual == nil, relPath)
+			if areEqual != nil {
+				fmt.Printf("\n  dyff between %v %v", walkSource, destFull)
+				somethingFailed = true
+			}
 		}
 		fmt.Println("")
 		return nil
 	})
 	if err != nil {
 		return err
+	}
+
+	if somethingFailed {
+		return fmt.Errorf("Dyff failed")
 	}
 
 	return nil
