@@ -22,7 +22,7 @@ func TestMain(m *testing.M) {
 }
 
 func Test_ValidateArgs(t *testing.T) {
-	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	trestsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	testtarget := t.TempDir()
 
 	err := DoMakeOverlay("", []string{}, "", "ns")
@@ -84,7 +84,10 @@ func Test_simple(t *testing.T) {
 		t.Errorf("Expected error not returned")
 	}
 
-	compareTree(testtarget, correctOutput)
+	err - compareTree(testtarget, correctOutput)
+	if err != nil {
+		t.Errorf("compareTree failed")
+	}
 
 	testInput := path.Join(testtarget, "base/kustomization.yaml")
 	testOutput := path.Join(correctOutput, "/base/kustomization.yaml")
