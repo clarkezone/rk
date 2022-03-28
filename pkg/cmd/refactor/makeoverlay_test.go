@@ -140,6 +140,13 @@ func Test_findPrimaryName(t *testing.T) {
 	log.Printf("Name: %v", name)
 }
 
+func Test_findPrimaryName(t *testing.T) {
+
+	testsource := path.Join(git_root, "testdata/unittest/findcontainernames/deployment.yaml")
+	name, err := findContainerNamesForDeployment(testsource)
+	log.Printf("Name: %v", name)
+}
+
 func dyffFiles(input string, outputPath string) error {
 	//TODO: verify success and failure cases
 	cmd := exec.Command("dyff", "between", input, outputPath)

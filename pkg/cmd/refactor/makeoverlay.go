@@ -39,7 +39,7 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 		return err
 	}
 	pname := findPrimaryName(base)
-	containernames := findContainerNames(base)
+	containernames, err := findContainerNames(base)
 
 	// move (only) yaml files from source into base
 	err = copyDir(sourceDir, base, inplace)
@@ -193,12 +193,13 @@ func findPrimaryName(baseDir string) string {
 	return "jekyllbuilder"
 }
 
-func findContainerNames(baseDir string) []string {
+func findContainerNames(baseDir string) ([]string, error) {
 	//TODO: iterate over all manifests in base
 	// find deployment, daemonset, statefulset
-	_ = path.Join(baseDir, "deployment.yaml")
+	manifestpath := path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
-	return []string{"blog-serve"}
+	findContainerNamesForDeployment(manifestpath)
+	return []string{"blog-serve"}, nil
 }
 
 func copyDir(source string, dest string, move bool) error {
@@ -271,6 +272,20 @@ func copyFile(source string, dest string) error {
 	return err
 }
 
+func loadFile(f string) (*RNode, error) {
+	bytes, err := ioutil.ReadFile(f)
+
+	if err != nil {
+		return nil, err
+	}
+
+	obj, err := Parse(string(bytes))
+	if err != nil {
+		return nil, err
+	}
+	return obj, nil
+}
+
 func editKustomize(ns string, f string) error {
 	bytes, err := ioutil.ReadFile(f)
 
@@ -316,4 +331,17 @@ func findName(f string) (string, error) {
 	}
 	value, err := node.String()
 	return value, err
+}
+
+func findContainerNamesForDeployment(f string) ([]string, error) {
+	obj, err := loadFile(f)
+	if err != nil {
+		return []string{""}, err
+	}
+	node, err := obj.Pipe(Get("name"))
+	if err != nil {
+		return []string{""}, err
+	}
+	value, err := node.String()
+	return []string{value}, err
 }
