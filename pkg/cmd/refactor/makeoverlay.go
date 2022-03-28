@@ -38,6 +38,8 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 	if err != nil {
 		return err
 	}
+	pname := findPrimaryName(base)
+	containernames := findContainerNames(base)
 
 	// move (only) yaml files from source into base
 	err = copyDir(sourceDir, base, inplace)
@@ -60,12 +62,10 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 		if err != nil {
 			return err
 		}
-		pname := findPrimaryName()
 		err = writeIncreaseReplicas(thisol, pname)
 		if err != nil {
 			return err
 		}
-		containernames := findContainerNames()
 		err = writeMemoryLimits(thisol, pname, containernames)
 		if err != nil {
 			return err
@@ -184,16 +184,19 @@ func writeTemplate(path string, t *template.Template, object interface{}) error 
 	return nil
 }
 
-func findPrimaryName() string {
+func findPrimaryName(baseDir string) string {
 	//TODO: iterate over all manifests in base
 	// find deployment, daemonset, statefulset
+	pName := path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
+	_, _ = findName(pName)
 	return "jekyllbuilder"
 }
 
-func findContainerNames() []string {
+func findContainerNames(baseDir string) []string {
 	//TODO: iterate over all manifests in base
 	// find deployment, daemonset, statefulset
+	_ = path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
 	return []string{"blog-serve"}
 }
@@ -294,4 +297,23 @@ func editKustomize(ns string, f string) error {
 	err = ioutil.WriteFile(f, bytes, fs.FileMode(0644))
 
 	return err
+}
+
+func findName(f string) (string, error) {
+	bytes, err := ioutil.ReadFile(f)
+
+	if err != nil {
+		return "", err
+	}
+
+	obj, err := Parse(string(bytes))
+	if err != nil {
+		return "", err
+	}
+	node, err := obj.Pipe(Get("name"))
+	if err != nil {
+		return "", err
+	}
+	value, err := node.String()
+	return value, err
 }

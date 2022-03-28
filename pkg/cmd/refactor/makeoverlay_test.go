@@ -133,6 +133,13 @@ func Test_simple_inplace(t *testing.T) {
 	//TODO verify kustomize manifests present and correct
 }
 
+func Test_findPrimaryName(t *testing.T) {
+
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	name := findPrimaryName(testsource)
+	log.Printf("Name: %v", name)
+}
+
 func dyffFiles(input string, outputPath string) error {
 	//TODO: verify success and failure cases
 	cmd := exec.Command("dyff", "between", input, outputPath)
