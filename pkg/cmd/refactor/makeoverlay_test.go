@@ -3,9 +3,11 @@ package refactor
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -82,6 +84,11 @@ func Test_simple(t *testing.T) {
 		t.Errorf("Expected error not returned")
 	}
 
+	err = compareTree(testtarget, correctOutput)
+	if err != nil {
+		t.Errorf("compareTree failed")
+	}
+
 	testInput := path.Join(testtarget, "base/kustomization.yaml")
 	testOutput := path.Join(correctOutput, "/base/kustomization.yaml")
 	//TODO dyfrecurse over correct
@@ -146,6 +153,51 @@ func setup() {
 	}
 	git_root = string(output)
 	git_root = strings.TrimSuffix(git_root, "\n")
+}
+
+func compareTree(source string, dest string) error {
+	somethingFailed := false
+	// run with go test -v -run Test_simple called from the correct dir
+	err := filepath.Walk(source, func(walkSource string, info os.FileInfo, err error) error {
+		//fmt.Printf("Walk: %v ", walkSource)
+		if err != nil {
+			log.Printf("Error entering walk %v", err.Error())
+		}
+		_, err = filepath.Rel(walkSource, dest)
+		if err != nil {
+			return err
+		}
+
+		if !info.IsDir() {
+			relPath, err := filepath.Rel(source, walkSource)
+			if err != nil {
+				return err
+			}
+
+			destFull := path.Join(dest, relPath)
+			areEqual := dyffFiles(walkSource, destFull)
+			fmt.Printf("Good:%v dest %v", areEqual == nil, relPath)
+			if areEqual != nil {
+				fmt.Printf("\n  dyff between %v %v", walkSource, destFull)
+				somethingFailed = true
+			}
+		}
+		fmt.Println("")
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+
+	if somethingFailed {
+		return fmt.Errorf("Dyff failed")
+	}
+
+	return nil
+}
+
+func Test_compareTree(t *testing.T) {
+
 }
 
 func Test_copyFile(t *testing.T) {
