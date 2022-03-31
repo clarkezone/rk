@@ -189,13 +189,11 @@ func findPrimaryName(baseDir string) string {
 	// find deployment, daemonset, statefulset
 	pName := path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
-	_, _ = findName(pName)
-	return "jekyllbuilder"
+	return findName(pName)
 }
 
 func findContainerNames(baseDir string) ([]string, error) {
-	//TODO: iterate over all manifests in base
-	// find deployment, daemonset, statefulset
+	// TODO: find deployment, daemonset, statefulset
 	manifestpath := path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
 	result, err := findContainerNamesForDeployment(manifestpath)
