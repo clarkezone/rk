@@ -198,8 +198,9 @@ func findContainerNames(baseDir string) ([]string, error) {
 	// find deployment, daemonset, statefulset
 	manifestpath := path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
-	findContainerNamesForDeployment(manifestpath)
-	return []string{"blog-serve"}, nil
+	result, err := findContainerNamesForDeployment(manifestpath)
+
+	return result, err
 }
 
 func copyDir(source string, dest string, move bool) error {
@@ -338,10 +339,16 @@ func findContainerNamesForDeployment(f string) ([]string, error) {
 	if err != nil {
 		return []string{""}, err
 	}
-	node, err := obj.Pipe(Get("name"))
+	node, err := obj.Pipe(Lookup("spec", "template", "spec", "containers"))
 	if err != nil {
 		return []string{""}, err
 	}
-	value, err := node.String()
-	return []string{value}, err
+	res, _ := node.String()
+	fmt.Print(res)
+	containerNames, err := node.ElementValues("name")
+	if err != nil {
+		return []string{""}, err
+	}
+
+	return containerNames, err
 }

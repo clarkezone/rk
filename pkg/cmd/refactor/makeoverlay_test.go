@@ -134,16 +134,20 @@ func Test_simple_inplace(t *testing.T) {
 }
 
 func Test_findPrimaryName(t *testing.T) {
-
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	name := findPrimaryName(testsource)
 	log.Printf("Name: %v", name)
 }
 
-func Test_findPrimaryName(t *testing.T) {
-
+func Test_findContainerNamesForDeployment(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/unittest/findcontainernames/deployment.yaml")
 	name, err := findContainerNamesForDeployment(testsource)
+	if err != nil {
+		t.Errorf("Error finding names for deployments")
+	}
+	if len(name) != 2 {
+		t.Errorf("containers found incorrect length %v", len(name))
+	}
 	log.Printf("Name: %v", name)
 }
 
