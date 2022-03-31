@@ -39,6 +39,7 @@ latest:
 lint:
 	golangci-lint run
 
+# pip3 install pre-commit
 .PHONY: precommit
 precommit:
 	pre-commit run --all-files
