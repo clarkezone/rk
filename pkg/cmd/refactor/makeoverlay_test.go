@@ -135,7 +135,10 @@ func Test_simple_inplace(t *testing.T) {
 
 func Test_findPrimaryName(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
-	name := findPrimaryName(testsource)
+	name, err := findPrimaryName(testsource)
+	if err != nil {
+		t.Errorf("Error finding names for deployments")
+	}
 	log.Printf("Name: %v", name)
 }
 

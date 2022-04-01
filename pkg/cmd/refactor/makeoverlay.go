@@ -38,11 +38,18 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 	if err != nil {
 		return err
 	}
-	pname := findPrimaryName(base)
-	containernames, err := findContainerNames(base)
 
 	// move (only) yaml files from source into base
 	err = copyDir(sourceDir, base, inplace)
+	if err != nil {
+		return err
+	}
+	pname, err := findPrimaryName(base)
+	if err != nil {
+		return err
+	}
+
+	containernames, err := findContainerNames(base)
 	if err != nil {
 		return err
 	}
@@ -184,7 +191,7 @@ func writeTemplate(path string, t *template.Template, object interface{}) error 
 	return nil
 }
 
-func findPrimaryName(baseDir string) string {
+func findPrimaryName(baseDir string) (string, error) {
 	//TODO: iterate over all manifests in base
 	// find deployment, daemonset, statefulset
 	pName := path.Join(baseDir, "deployment.yaml")
