@@ -51,10 +51,8 @@ Goal: Inner loop
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
   - [x] write patch file into overlay directory (increase replicas)
   - [x] write patch file into overlay directory (set memory for all containers)
-  - [x] update integration test to test overlays
-    - [x] Helper to call dyff library using source and dest path for single file compare
-    - [x] Helper to recurse of tree calling above
-~~    - [ ] call integration test in CI build~~
+  - [x] update integration test to test overlays - [x] Helper to call dyff library using source and dest path for single file compare - [x] Helper to recurse of tree calling above
+        ~~ - [ ] call integration test in CI build~~
   - [ ] Add commented out reference in respective overlay folder
   - [ ] implement functions to get deployment name and container names from manifests
     - [x] get deployment name using kyaml
