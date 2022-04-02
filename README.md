@@ -42,7 +42,7 @@ Goal: Inner loop
 - [x] integration test that calls `kubectl kustomize ./`
 - [x] build manifest templated add logic
 - [x] verify against jekyll project
-- [ ] verify on mac (switch to local)
+- [x] verify on mac (switch to local)
 
 - [x] Goal: make UT pass for `DoMakeOverlay`
 
