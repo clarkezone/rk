@@ -18,10 +18,7 @@ HELLOWORLD: minimal golang app with tests that compiles
 - [x] all other linting
 - [x] coveralls badge
 - [x] Precommit
-- [ ] handle different log levels
-- [ ] gate on codecoverage thresholds
-- [ ] converge CI build with make script
-- [ ] show build badges ()
+
 
 Scenario: take a non-kustomize manifest set and create a version using bases and
 overlays for dev, prod, staging in a namespace with an app set using
@@ -44,28 +41,33 @@ Goal: Inner loop
 - [x] verify against jekyll project
 - [x] verify on mac (switch to local)
 
+Scenario: `createlayers` functionality
 - [x] Goal: make UT pass for `DoMakeOverlay`
-
+- [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
+  - [ ] Documentation at CLI for createlayers
+- [ ] Goal: implement function to strip namespaces from original manifests
+ - [ ] write unit test for namespace stripping with yaml comparison with known failure case
+ - [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
-
+  - [ ] Add commented out reference in respective overlay folder
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
   - [x] write patch file into overlay directory (increase replicas)
   - [x] write patch file into overlay directory (set memory for all containers)
   - [x] update integration test to test overlays - [x] Helper to call dyff library using source and dest path for single file compare - [x] Helper to recurse of tree calling above
-        ~~ - [ ] call integration test in CI build~~
-  - [ ] Add commented out reference in respective overlay folder
-  - [ ] implement functions to get deployment name and container names from manifests
+  - [x] implement functions to get deployment name and container names from manifests
     - [x] get deployment name using kyaml
     - [x] get container names using kyaml
-    - [ ] write unit test for both
-    - [ ] create repro case for kyaml broken scenario and submit but
-    - [ ] write unit test for function to get deployment and container names
-  - [ ] implement function to strip namespaces from original manifests
-  - [ ] write unit test for namespace stripping with yaml comparison with known failure case
-  - [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
+    - [x] write unit test for function to get deployment and container names
 
-  - [ ] Goal: get CD using same matrixed build versions
-  - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
+Scenario: `kubectl create deployement` then clean
+Scenario: prep MVP release
+- [ ] Goal: get CD using same matrixed build versions.  Hook up download counter to build
+- [ ] Goal: BadgeApp clean
+- [ ] Goal: write documentation for initial scenarios
+- [ ] handle different log levels
+- [ ] gate on codecoverage thresholds
+- [ ] converge CI build with make script
+- [ ] show build badges ()
 
 # figure out
 
