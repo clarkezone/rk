@@ -19,7 +19,6 @@ HELLOWORLD: minimal golang app with tests that compiles
 - [x] coveralls badge
 - [x] Precommit
 
-
 Scenario: take a non-kustomize manifest set and create a version using bases and
 overlays for dev, prod, staging in a namespace with an app set using
 crosscutting fields that renders correctly with `kubectl kustomize -k`
@@ -42,12 +41,13 @@ Goal: Inner loop
 - [x] verify on mac (switch to local)
 
 Scenario: `createlayers` functionality
+
 - [x] Goal: make UT pass for `DoMakeOverlay`
 - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
   - [ ] Documentation at CLI for createlayers
 - [ ] Goal: implement function to strip namespaces from original manifests
- - [ ] write unit test for namespace stripping with yaml comparison with known failure case
- - [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
+- [ ] write unit test for namespace stripping with yaml comparison with known failure case
+- [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
   - [ ] Add commented out reference in respective overlay folder
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
@@ -61,7 +61,8 @@ Scenario: `createlayers` functionality
 
 Scenario: `kubectl create deployement` then clean
 Scenario: prep MVP release
-- [ ] Goal: get CD using same matrixed build versions.  Hook up download counter to build
+
+- [ ] Goal: get CD using same matrixed build versions. Hook up download counter to build
 - [ ] Goal: BadgeApp clean
 - [ ] Goal: write documentation for initial scenarios
 - [ ] handle different log levels
