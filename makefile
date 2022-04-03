@@ -39,6 +39,8 @@ latest:
 lint:
 	golangci-lint run
 
+# pip3 install pre-commit
+# sudo apt install spellcheck
 .PHONY: precommit
 precommit:
 	pre-commit run --all-files

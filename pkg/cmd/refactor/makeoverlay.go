@@ -44,6 +44,15 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 	if err != nil {
 		return err
 	}
+	pname, err := findPrimaryName(base)
+	if err != nil {
+		return err
+	}
+
+	containernames, err := findContainerNames(base)
+	if err != nil {
+		return err
+	}
 
 	// create overlay dir in target
 	// foreach over overlays and create a dir for each one in target
@@ -60,12 +69,10 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 		if err != nil {
 			return err
 		}
-		pname := findPrimaryName()
 		err = writeIncreaseReplicas(thisol, pname)
 		if err != nil {
 			return err
 		}
-		containernames := findContainerNames()
 		err = writeMemoryLimits(thisol, pname, containernames)
 		if err != nil {
 			return err
@@ -184,18 +191,21 @@ func writeTemplate(path string, t *template.Template, object interface{}) error 
 	return nil
 }
 
-func findPrimaryName() string {
+func findPrimaryName(baseDir string) (string, error) {
 	//TODO: iterate over all manifests in base
 	// find deployment, daemonset, statefulset
+	pName := path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
-	return "jekyllbuilder"
+	return findName(pName)
 }
 
-func findContainerNames() []string {
-	//TODO: iterate over all manifests in base
-	// find deployment, daemonset, statefulset
+func findContainerNames(baseDir string) ([]string, error) {
+	// TODO: find deployment, daemonset, statefulset
+	manifestpath := path.Join(baseDir, "deployment.yaml")
 	// lookup name metadata
-	return []string{"blog-serve"}
+	result, err := findContainerNamesForDeployment(manifestpath)
+
+	return result, err
 }
 
 func copyDir(source string, dest string, move bool) error {
@@ -268,6 +278,20 @@ func copyFile(source string, dest string) error {
 	return err
 }
 
+func loadFile(f string) (*RNode, error) {
+	bytes, err := ioutil.ReadFile(f)
+
+	if err != nil {
+		return nil, err
+	}
+
+	obj, err := Parse(string(bytes))
+	if err != nil {
+		return nil, err
+	}
+	return obj, nil
+}
+
 func editKustomize(ns string, f string) error {
 	bytes, err := ioutil.ReadFile(f)
 
@@ -294,4 +318,42 @@ func editKustomize(ns string, f string) error {
 	err = ioutil.WriteFile(f, bytes, fs.FileMode(0644))
 
 	return err
+}
+
+func findName(f string) (string, error) {
+	bytes, err := ioutil.ReadFile(f)
+
+	if err != nil {
+		return "", err
+	}
+
+	obj, err := Parse(string(bytes))
+	if err != nil {
+		return "", err
+	}
+	node, err := obj.Pipe(Get("name"))
+	if err != nil {
+		return "", err
+	}
+	value, err := node.String()
+	return value, err
+}
+
+func findContainerNamesForDeployment(f string) ([]string, error) {
+	obj, err := loadFile(f)
+	if err != nil {
+		return []string{""}, err
+	}
+	node, err := obj.Pipe(Lookup("spec", "template", "spec", "containers"))
+	if err != nil {
+		return []string{""}, err
+	}
+	res, _ := node.String()
+	fmt.Print(res)
+	containerNames, err := node.ElementValues("name")
+	if err != nil {
+		return []string{""}, err
+	}
+
+	return containerNames, err
 }
