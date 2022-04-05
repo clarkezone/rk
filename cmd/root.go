@@ -18,7 +18,7 @@ var cfgFile string
 var rootCmd = &cobra.Command{
 	Use:   "rk",
 	Short: "A tool for working with kubernetes and docker manifests",
-	Long: `Manimule makes it easy to add and refactor docker and kubernetes manifests to an applicaiton. For example:
+	Long: `rk makes it easy to add and refactor docker and kubernetes manifests to an application. For example:
 
 rk docker add
 rk clean deployment.yaml
