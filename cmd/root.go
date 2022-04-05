@@ -16,14 +16,14 @@ var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "manimule",
+	Use:   "rk",
 	Short: "A tool for working with kubernetes and docker manifests",
 	Long: `Manimule makes it easy to add and refactor docker and kubernetes manifests to an applicaiton. For example:
 
-manimule docker add
-manimule k8s clean deployment.yaml
-manimule k8s add kustomize
-manimule k8s layer create
+rk docker add
+rk clean deployment.yaml
+rk add kustomize
+rk overlays create
 `,
 }
 
@@ -48,6 +48,10 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.InitDefaultVersionFlag()
+	rootCmd.AddCommand(Version())
+	//rootCmd.AddCommand(Overlay())
 }
 
 // initConfig reads in config file and ENV variables if set.

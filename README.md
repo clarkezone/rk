@@ -44,7 +44,9 @@ Scenario: `createlayers` functionality
 
 - [x] Goal: make UT pass for `DoMakeOverlay`
 - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
-  - [ ] Documentation at CLI for createlayers
+  - [x] Add Cobra root command
+  - [ ] Add version command
+  - [ ] Add layers create with flags and help
 - [ ] Goal: implement function to strip namespaces from original manifests
 - [ ] write unit test for namespace stripping with yaml comparison with known failure case
 - [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
