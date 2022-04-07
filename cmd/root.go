@@ -51,7 +51,7 @@ func init() {
 
 	rootCmd.InitDefaultVersionFlag()
 	rootCmd.AddCommand(Version())
-	//rootCmd.AddCommand(Overlay())
+	rootCmd.AddCommand(Overlay())
 }
 
 // initConfig reads in config file and ENV variables if set.
