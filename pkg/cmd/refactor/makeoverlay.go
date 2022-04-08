@@ -348,8 +348,6 @@ func findContainerNamesForDeployment(f string) ([]string, error) {
 	if err != nil {
 		return []string{""}, err
 	}
-	res, _ := node.String()
-	fmt.Print(res)
 	containerNames, err := node.ElementValues("name")
 	if err != nil {
 		return []string{""}, err

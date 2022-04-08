@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 
+	refactorCMD "github.com/clarkezone/rk/pkg/cmd/refactor"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +20,9 @@ func Overlay() *cobra.Command {
 
 //Create creates a layer
 func Create() *cobra.Command {
-	return &cobra.Command{
+	var outdir string
+	var namespace string
+	command := &cobra.Command{
 		Use:   "create",
 		Short: "restructure source as base and overlays.",
 		Long: `rk overlay create restructures an existing flat set of kubernetes manifests and creates a base with a set of overlays.
@@ -30,10 +33,16 @@ func Create() *cobra.Command {
 		`,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Printf("Running overlay create command with source dir of %v\n", args[0])
-			return nil
+			return refactorCMD.DoMakeOverlay(
+				args[0],
+				[]string{"dev", "staging", "prod"},
+				outdir,
+				namespace)
 		},
 	}
+	command.LocalFlags().StringVar(&outdir, "out", "output", "Specify an output directory")
+	command.LocalFlags().StringVar(&namespace, "namespace", "default", "Specify kubernetes namespace")
+	return command
 }
 
 func NoArgsAccepted() cobra.PositionalArgs {

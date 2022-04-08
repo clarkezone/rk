@@ -48,7 +48,7 @@ precommit:
 
 .PHONY: build
 build:
-	$(BUILDCOMMAND) -o ${BINDIR}/manimule
+	$(BUILDCOMMAND) -o ${BINDIR}/rk
 
 .PHONY: release
 build-all: $(PLATFORMS)
