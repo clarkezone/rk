@@ -46,10 +46,15 @@ Scenario: `createlayers` functionality
 - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
   - [x] Add Cobra root command
   - [ ] Add version command
+    - [ ] Fix version string
   - [ ] Add layers create with flags and help
+    - [ ] Fix output flag
+    - [ ] create output dir if doesn't exist (including ignore it if inside source)
+  - [ ] Make command to install with version
+- [ ] Goal: fix CI official build based on tags
 - [ ] Goal: implement function to strip namespaces from original manifests
-- [ ] write unit test for namespace stripping with yaml comparison with known failure case
-- [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
+  - [ ] write unit test for namespace stripping with yaml comparison with known failure case
+  - [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
   - [ ] Add commented out reference in respective overlay folder
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
