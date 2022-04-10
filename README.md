@@ -45,8 +45,8 @@ Scenario: `createlayers` functionality
 - [x] Goal: make UT pass for `DoMakeOverlay`
 - [ ] Goal: Make command get it's stuff from cmdline to call `DoMakeOverlay`
   - [x] Add Cobra root command
-  - [ ] Add version command
-    - [ ] Fix version string
+  - [x] Add version command
+    - [x] Fix version string
   - [ ] Add layers create with flags and help
     - [ ] Fix output flag
     - [ ] create output dir if doesn't exist (including ignore it if inside source)
