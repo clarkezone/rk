@@ -21,9 +21,10 @@ func Overlay() *cobra.Command {
 //Create creates a layer
 func Create() *cobra.Command {
 	var outdir string
+	var sourcedir string
 	var namespace string
 	command := &cobra.Command{
-		Use:   "create",
+		Use:   "create <souredir>",
 		Short: "restructure source as base and overlays.",
 		Long: `rk overlay create restructures an existing flat set of kubernetes manifests and creates a base with a set of overlays.
 	By default this is, dev, stage, prod
@@ -40,8 +41,11 @@ func Create() *cobra.Command {
 				namespace)
 		},
 	}
-	command.LocalFlags().StringVar(&outdir, "out", "output", "Specify an output directory")
-	command.LocalFlags().StringVar(&namespace, "namespace", "default", "Specify kubernetes namespace")
+	command.Flags().StringVar(&sourcedir, "source", "", "Specify a source directory")
+	command.MarkFlagDirname(sourcedir)
+	command.Flags().StringVar(&outdir, "out", "output", "Specify an output directory")
+	command.MarkFlagDirname("out")
+	command.Flags().StringVar(&namespace, "namespace", "default", "Specify kubernetes namespace")
 	return command
 }
 

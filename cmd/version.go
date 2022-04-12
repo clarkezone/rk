@@ -13,7 +13,7 @@ func Version() *cobra.Command {
 		Use:   "version",
 		Short: "Show rk CLI version",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			fmt.Printf("rk version %s hash %s\n", config.VersionHash, config.VersionString)
+			fmt.Printf("rk version %s hash %s\n", config.VersionString, config.VersionHash)
 			return nil
 		},
 	}
