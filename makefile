@@ -6,6 +6,7 @@ endif
 BINDIR    := $(CURDIR)/bin
 PLATFORMS := linux/amd64/rk-Linux-x86_64 darwin/amd64/rk-Darwin-x86_64 windows/amd64/rk.exe linux/arm64/rk-Linux-arm64 darwin/arm64/rk-Darwin-arm64
 BUILDCOMMAND := go build -trimpath -ldflags "-s -w -X github.com/clarkezone/rk/pkg/config.VersionHash=${VERSION_HASH} -X github.com/clarkezone/rk/pkg/config.VersionString=${VERSION_STRING}" -tags "osusergo netgo static_build"
+INSTALLCOMMAND := go install -trimpath -ldflags "-s -w -X github.com/clarkezone/rk/pkg/config.VersionHash=${VERSION_HASH} -X github.com/clarkezone/rk/pkg/config.VersionString=${VERSION_STRING}" -tags "osusergo netgo static_build"
 temp = $(subst /, ,$@)
 os = $(word 1, $(temp))
 arch = $(word 2, $(temp))
@@ -49,6 +50,10 @@ precommit:
 .PHONY: build
 build:
 	$(BUILDCOMMAND) -o ${BINDIR}/rk
+
+.PHONY: install
+install:
+	$(INSTALLCOMMAND)
 
 .PHONY: release
 build-all: $(PLATFORMS)
