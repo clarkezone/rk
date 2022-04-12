@@ -19,12 +19,18 @@ import (
 func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, namespace string) error {
 	shouldReturn, returnValue := validateArgs(sourceDir, overlayList)
 
-	expandTargetDir(&sourceDir)
-	expandTargetDir(&targetDir)
-
 	if shouldReturn {
 		return returnValue
 	}
+
+	expandDir(&sourceDir)
+	expandDir(&targetDir)
+
+	if !anyManifests(sourceDir) {
+		fmt.Printf("No manifests found in source directory %v\n", sourceDir)
+		return nil
+	}
+
 	if !targetExists(targetDir) {
 		err := os.MkdirAll(targetDir, 0755)
 		if err != nil {
@@ -101,7 +107,7 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 	return err
 }
 
-func expandTargetDir(s *string) error {
+func expandDir(s *string) error {
 	if !path.IsAbs(*s) {
 		wd, err := os.Getwd()
 		if err != nil {
@@ -210,6 +216,23 @@ func writeTemplate(path string, t *template.Template, object interface{}) error 
 		return err
 	}
 	return nil
+}
+
+func anyManifests(baseDir string) bool {
+	//TODO recurse
+	//TODO verify that any yaml files found are k8s manifests
+
+	dirs, err := ioutil.ReadDir(baseDir)
+	if err != nil {
+		return false
+	}
+	for _, e := range dirs {
+		ext := strings.ToLower(path.Ext(e.Name()))
+		if ext == ".yaml" || ext == ".yml" {
+			return true
+		}
+	}
+	return false
 }
 
 func findPrimaryName(baseDir string) (string, error) {

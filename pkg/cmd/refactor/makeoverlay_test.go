@@ -209,6 +209,18 @@ func dyffFiles(input string, outputPath string) error {
 	return nil
 }
 
+func Test_anymanifests(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	if !anyManifests(testsource) {
+		t.Errorf("no manifests found")
+	}
+
+	testsource = path.Join(git_root, "testdata/cmd")
+	if anyManifests(testsource) {
+		t.Errorf("manifests unexpectedly found")
+	}
+}
+
 func setup() {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 
