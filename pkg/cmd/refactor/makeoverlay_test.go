@@ -98,6 +98,50 @@ func Test_simple(t *testing.T) {
 	}
 }
 
+func Test_simple_createtarget(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	testtarget := t.TempDir()
+	testtarget = path.Join(testtarget, "output")
+	overlays := []string{"dev", "stagig", "prod"}
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	if err != nil {
+		t.Errorf("Error in Test_simple_createtarget %v", err)
+	}
+}
+
+func Test_simple_createtargetinsidesource(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	testtarget := path.Join(testsource, "output")
+	overlays := []string{"dev", "stagig", "prod"}
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	if err != nil {
+		t.Errorf("Error in Test_simple_createtargetinsidesource %v", err)
+	}
+	os.RemoveAll(testtarget)
+}
+
+func Test_simple_targetdefault(t *testing.T) {
+	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
+	testtarget := "output"
+	overlays := []string{"dev", "stagig", "prod"}
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	if err != nil {
+		t.Errorf("Error in Test_simple_targetdefault %v", err)
+	}
+	os.RemoveAll(testtarget)
+}
+
+func Test_simple_incurrentdir(t *testing.T) {
+	testsource := "."
+	testtarget := "output"
+	overlays := []string{"dev", "stagig", "prod"}
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	if err != nil {
+		t.Errorf("Error in Test_simple_createtargetinsidesource %v", err)
+	}
+	os.RemoveAll(testtarget)
+}
+
 func Test_simple_inplace(t *testing.T) {
 	testsource, err := SimpleTest(t, git_root)
 	if err != nil {

@@ -10,16 +10,26 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/golang-collections/collections/stack"
 	. "sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
 func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, namespace string) error {
+	shouldReturn, returnValue := validateArgs(sourceDir, overlayList)
 
-	shouldReturn, returnValue := validateArgs(sourceDir, targetDir, overlayList)
+	expandTargetDir(&sourceDir)
+	expandTargetDir(&targetDir)
+
 	if shouldReturn {
 		return returnValue
+	}
+	if !targetExists(targetDir) {
+		err := os.MkdirAll(targetDir, 0755)
+		if err != nil {
+			return err
+		}
 	}
 
 	match, err := filepath.Rel(sourceDir, targetDir)
@@ -91,13 +101,19 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 	return err
 }
 
-func validateArgs(sourceDir string, targetDir string, overlayList []string) (bool, error) {
-	_, err := os.Stat(sourceDir)
-	if err != nil {
-		return true, err
+func expandTargetDir(s *string) error {
+	if !path.IsAbs(*s) {
+		wd, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+		*s = path.Join(wd, *s)
 	}
+	return nil
+}
 
-	_, err = os.Stat(targetDir)
+func validateArgs(sourceDir string, overlayList []string) (bool, error) {
+	_, err := os.Stat(sourceDir)
 	if err != nil {
 		return true, err
 	}
@@ -106,6 +122,11 @@ func validateArgs(sourceDir string, targetDir string, overlayList []string) (boo
 		return true, fmt.Errorf("no overlays provided")
 	}
 	return false, nil
+}
+
+func targetExists(targetDir string) bool {
+	_, err := os.Stat(targetDir)
+	return err == nil
 }
 
 type tempargs struct {
@@ -214,6 +235,11 @@ func copyDir(source string, dest string, move bool) error {
 		if err != nil {
 			log.Printf("Error entering walk %v", err.Error())
 		}
+
+		if strings.HasPrefix(walkSource, dest) {
+			return nil
+		}
+
 		isMovedPath, err := filepath.Rel(walkSource, dest)
 		if err != nil {
 			return err
