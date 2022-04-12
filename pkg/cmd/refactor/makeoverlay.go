@@ -26,12 +26,19 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 	expandDir(&sourceDir)
 	expandDir(&targetDir)
 
+	texists, tempty := targetExists(targetDir)
+
 	if !anyManifests(sourceDir) {
 		fmt.Printf("No manifests found in source directory %v\n", sourceDir)
 		return nil
 	}
 
-	if !targetExists(targetDir) {
+	if !tempty {
+		fmt.Printf("Output dir %v is not empty.  Are you sure? y/n", targetDir)
+
+	}
+
+	if !texists {
 		err := os.MkdirAll(targetDir, 0755)
 		if err != nil {
 			return err
@@ -130,9 +137,15 @@ func validateArgs(sourceDir string, overlayList []string) (bool, error) {
 	return false, nil
 }
 
-func targetExists(targetDir string) bool {
+func targetExists(targetDir string) (bool, bool) {
 	_, err := os.Stat(targetDir)
-	return err == nil
+	exists := err == nil
+	if !exists {
+		return false, false
+	}
+	empty := false
+
+	return true, empty
 }
 
 type tempargs struct {
