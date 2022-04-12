@@ -47,14 +47,16 @@ Scenario: `createlayers` functionality
   - [x] Add Cobra root command
   - [x] Add version command
     - [x] Fix version string
-  - [ ] Add layers create with flags and help
-    - [ ] Fix output flag
-    - [ ] create output dir if doesn't exist (including ignore it if inside source)
-  - [ ] Make command to install with version
+  - [x] Add layers create with flags and help
+    - [x] Fix output flag
+    - [x] create output dir if doesn't exist 
+    - [x] ignore it if inside source
+    - [x] Support no output flag passed in with absolute sourcedir
+    - [x] Support . for sourcedir
+    - [x] source should have at least 1 k8s manifest.. if none do not create output folders
+    - [ ] updateoutput with confirm
+  - [x] Make command to install with version
 - [ ] Goal: fix CI official build based on tags
-- [ ] Goal: implement function to strip namespaces from original manifests
-  - [ ] write unit test for namespace stripping with yaml comparison with known failure case
-  - [ ] write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
   - [ ] Add commented out reference in respective overlay folder
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
@@ -66,7 +68,6 @@ Scenario: `createlayers` functionality
     - [x] get container names using kyaml
     - [x] write unit test for function to get deployment and container names
 
-Scenario: `kubectl create deployement` then clean
 Scenario: prep MVP release
 
 - [ ] Goal: get CD using same matrixed build versions. Hook up download counter to build
@@ -79,14 +80,17 @@ Scenario: prep MVP release
 
 # figure out
 
-1. how to get dir where cmd is running
-2. how to combine multiple cobra commands / switch structures
-3. how to test multiple cobra commands / switch structures
-4. how to return args in cobraCommand
-5. how to incorporate release into github action
-6. how to run integration test in GA or circleci
+1. how to test multiple cobra commands / switch structures
+2. how to run integration test in GA or circleci
 
 Backlog:
+Scenario: implement function to strip ?hard-coded app name/namespaces from original manifests
+write unit test for namespace stripping with yaml comparison with known failure case
+Scenario: `kubectl create deployement` then clean
+write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
+command to add a kustomization.yaml and populate with all validd manifests.  If one exists, update manifest list based on what's in dir
+Add colorization to output
+Output shows treestructure that was created
 If there is a namespace file used to create namespace, patch that with passed in namespace
 If there is no namespace file, createone
 CLEANUP existing manifests: strip redundant namespace fields
