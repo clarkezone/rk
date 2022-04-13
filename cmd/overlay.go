@@ -41,7 +41,10 @@ func Create() *cobra.Command {
 		},
 	}
 	command.Flags().StringVar(&outdir, "out", "output", "Specify an output directory")
-	command.MarkFlagDirname("out")
+	err := command.MarkFlagDirname("out")
+	if err != nil {
+		panic(err)
+	}
 	command.Flags().StringVar(&namespace, "namespace", "default", "Specify kubernetes namespace")
 	return command
 }

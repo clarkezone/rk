@@ -23,8 +23,15 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 		return returnValue
 	}
 
-	expandDir(&sourceDir)
-	expandDir(&targetDir)
+	err := expandDir(&sourceDir)
+	if err != nil {
+		return err
+	}
+
+	err = expandDir(&targetDir)
+	if err != nil {
+		return err
+	}
 
 	if !anyManifests(sourceDir) {
 		fmt.Printf("No manifests found in source directory %v\n", sourceDir)
