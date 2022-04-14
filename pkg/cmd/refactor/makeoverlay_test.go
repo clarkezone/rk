@@ -221,6 +221,20 @@ func Test_anymanifests(t *testing.T) {
 	}
 }
 
+func Test_exists(t *testing.T) {
+	exists, empty := targetExists("\tmp\randomdoesn'texist")
+	if exists != false || empty != false {
+		t.Errorf("incorrect result for targetExists")
+	}
+
+	goodTarget := t.TempDir()
+
+	exists, empty = targetExists(goodTarget)
+	if exists != true || empty != false {
+		t.Errorf("incorrect result for targetExists")
+	}
+}
+
 func setup() {
 	cmd := exec.Command("git", "rev-parse", "--show-toplevel")
 

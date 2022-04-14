@@ -142,9 +142,29 @@ func targetExists(targetDir string) (bool, bool) {
 	if !exists {
 		return false, false
 	}
-	empty := false
 
+	empty, err := IsDirEmpty(targetDir)
+	if err != nil {
+		panic(err)
+	}
 	return true, empty
+}
+
+func IsDirEmpty(name string) (bool, error) {
+	f, err := os.Open(name)
+	if err != nil {
+		return false, err
+	}
+	defer f.Close()
+
+	// read in ONLY one file
+	_, err = f.Readdir(1)
+
+	// and if the file is EOF... well, the dir is empty.
+	if err == io.EOF {
+		return true, nil
+	}
+	return false, err
 }
 
 type tempargs struct {
