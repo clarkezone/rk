@@ -35,7 +35,6 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 
 	if !tempty {
 		fmt.Printf("Output dir %v is not empty.  Are you sure? y/n", targetDir)
-
 	}
 
 	if !texists {
