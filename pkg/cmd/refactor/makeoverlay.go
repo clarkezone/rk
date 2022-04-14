@@ -10,16 +10,39 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/golang-collections/collections/stack"
 	. "sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
 func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, namespace string) error {
+	shouldReturn, returnValue := validateArgs(sourceDir, overlayList)
 
-	shouldReturn, returnValue := validateArgs(sourceDir, targetDir, overlayList)
 	if shouldReturn {
 		return returnValue
+	}
+
+	err := expandDir(&sourceDir)
+	if err != nil {
+		return err
+	}
+
+	err = expandDir(&targetDir)
+	if err != nil {
+		return err
+	}
+
+	if !anyManifests(sourceDir) {
+		fmt.Printf("No manifests found in source directory %v\n", sourceDir)
+		return nil
+	}
+
+	if !targetExists(targetDir) {
+		err := os.MkdirAll(targetDir, 0755)
+		if err != nil {
+			return err
+		}
 	}
 
 	match, err := filepath.Rel(sourceDir, targetDir)
@@ -91,13 +114,19 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 	return err
 }
 
-func validateArgs(sourceDir string, targetDir string, overlayList []string) (bool, error) {
-	_, err := os.Stat(sourceDir)
-	if err != nil {
-		return true, err
+func expandDir(s *string) error {
+	if !path.IsAbs(*s) {
+		wd, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+		*s = path.Join(wd, *s)
 	}
+	return nil
+}
 
-	_, err = os.Stat(targetDir)
+func validateArgs(sourceDir string, overlayList []string) (bool, error) {
+	_, err := os.Stat(sourceDir)
 	if err != nil {
 		return true, err
 	}
@@ -106,6 +135,11 @@ func validateArgs(sourceDir string, targetDir string, overlayList []string) (boo
 		return true, fmt.Errorf("no overlays provided")
 	}
 	return false, nil
+}
+
+func targetExists(targetDir string) bool {
+	_, err := os.Stat(targetDir)
+	return err == nil
 }
 
 type tempargs struct {
@@ -191,6 +225,23 @@ func writeTemplate(path string, t *template.Template, object interface{}) error 
 	return nil
 }
 
+func anyManifests(baseDir string) bool {
+	//TODO recurse
+	//TODO verify that any yaml files found are k8s manifests
+
+	dirs, err := ioutil.ReadDir(baseDir)
+	if err != nil {
+		return false
+	}
+	for _, e := range dirs {
+		ext := strings.ToLower(path.Ext(e.Name()))
+		if ext == ".yaml" || ext == ".yml" {
+			return true
+		}
+	}
+	return false
+}
+
 func findPrimaryName(baseDir string) (string, error) {
 	//TODO: iterate over all manifests in base
 	// find deployment, daemonset, statefulset
@@ -214,6 +265,11 @@ func copyDir(source string, dest string, move bool) error {
 		if err != nil {
 			log.Printf("Error entering walk %v", err.Error())
 		}
+
+		if strings.HasPrefix(walkSource, dest) {
+			return nil
+		}
+
 		isMovedPath, err := filepath.Rel(walkSource, dest)
 		if err != nil {
 			return err
