@@ -54,7 +54,7 @@ Scenario: `createlayers` functionality
     - [x] Support no output flag passed in with absolute sourcedir
     - [x] Support . for sourcedir
     - [x] source should have at least 1 k8s manifest.. if none do not create output folders
-    - [ ] updateoutput with confirm
+    - [x] updateoutput with confirm
   - [x] Make command to install with version
 - [ ] Goal: fix CI official build based on tags
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
