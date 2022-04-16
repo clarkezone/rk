@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/golang-collections/collections/stack"
+	"github.com/gonvenience/bunt"
 	. "sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
@@ -42,18 +43,19 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 
 	if checkout {
 		if !tempty {
-			fmt.Printf("Output dir %v is not empty.  Are you sure? y/n", targetDir)
-		}
+			fmt.Printf("Output dir %v is not empty.  Are you sure? (y/n): ", targetDir)
+			reader := bufio.NewReader(os.Stdin)
+			text, err := reader.ReadString('\n')
 
-		reader := bufio.NewReader(os.Stdin)
-		text, err := reader.ReadString('\n')
+			if err != nil {
+				return err
+			}
 
-		if err != nil {
-			return err
-		}
-
-		if !strings.HasPrefix(text, "y") {
-			os.Exit(0)
+			if !strings.HasPrefix(text, "y") {
+				style := bunt.Foreground(bunt.Orange)
+				println(bunt.Style("Nothing written.", style))
+				os.Exit(0)
+			}
 		}
 	}
 
@@ -130,6 +132,8 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 
 	err = editKustomize(namespace, baseKust)
 
+	style := bunt.Foreground(bunt.Green)
+	fmt.Println(bunt.Style("Done.", style))
 	return err
 }
 
@@ -160,7 +164,7 @@ func targetExists(targetDir string) (bool, bool) {
 	_, err := os.Stat(targetDir)
 	exists := err == nil
 	if !exists {
-		return false, false
+		return false, true
 	}
 
 	empty, err := IsDirEmpty(targetDir)

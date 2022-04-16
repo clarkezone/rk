@@ -223,7 +223,7 @@ func Test_anymanifests(t *testing.T) {
 
 func Test_exists(t *testing.T) {
 	exists, empty := targetExists("\tmp\randomdoesn'texist")
-	if exists != false || empty != false {
+	if exists != false || empty != true {
 		t.Errorf("incorrect result for targetExists")
 	}
 
