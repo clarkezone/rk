@@ -19,6 +19,6 @@ func SimpleTest(t *testing.T, git_root string) (string, error) {
 	}
 
 	overlays := []string{"dev", "stagig", "prod"}
-	err = DoMakeOverlay(testsource, overlays, testsource, "ns")
+	err = DoMakeOverlay(testsource, overlays, testsource, "ns", false)
 	return testsource, err
 }

@@ -25,24 +25,24 @@ func Test_ValidateArgs(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	testtarget := t.TempDir()
 
-	err := DoMakeOverlay("", []string{}, "", "ns")
+	err := DoMakeOverlay("", []string{}, "", "ns", false)
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
 
-	err = DoMakeOverlay(testsource, []string{}, "", "ns")
+	err = DoMakeOverlay(testsource, []string{}, "", "ns", false)
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
 
-	err = DoMakeOverlay(testsource, []string{}, testtarget, "ns")
+	err = DoMakeOverlay(testsource, []string{}, testtarget, "ns", false)
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
 
 	//TODO how to make path.Join fail
 	badsource := path.Join(testsource, strings.Repeat("ssssssssssssssssssssssssss", 400))
-	err = DoMakeOverlay(badsource, []string{}, testtarget, "ns")
+	err = DoMakeOverlay(badsource, []string{}, testtarget, "ns", false)
 	if err == nil {
 		t.Error("Arg validation incorrect")
 	}
@@ -53,7 +53,7 @@ func Test_simple(t *testing.T) {
 	testtarget := t.TempDir()
 	correctOutput := path.Join(git_root, "testdata/correctoutput/Test_simple/001")
 	overlays := []string{"dev", "stagig", "prod"}
-	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns", false)
 	if err != nil {
 		t.Errorf("Test fail %v", err)
 	}
@@ -103,7 +103,7 @@ func Test_simple_createtarget(t *testing.T) {
 	testtarget := t.TempDir()
 	testtarget = path.Join(testtarget, "output")
 	overlays := []string{"dev", "stagig", "prod"}
-	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns", false)
 	if err != nil {
 		t.Errorf("Error in Test_simple_createtarget %v", err)
 	}
@@ -113,7 +113,7 @@ func Test_simple_createtargetinsidesource(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	testtarget := path.Join(testsource, "output")
 	overlays := []string{"dev", "stagig", "prod"}
-	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns", false)
 	if err != nil {
 		t.Errorf("Error in Test_simple_createtargetinsidesource %v", err)
 	}
@@ -124,7 +124,7 @@ func Test_simple_targetdefault(t *testing.T) {
 	testsource := path.Join(git_root, "testdata/simple/helloworldkustomize")
 	testtarget := "output"
 	overlays := []string{"dev", "stagig", "prod"}
-	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns", false)
 	if err != nil {
 		t.Errorf("Error in Test_simple_targetdefault %v", err)
 	}
@@ -135,7 +135,7 @@ func Test_simple_incurrentdir(t *testing.T) {
 	testsource := "."
 	testtarget := "output"
 	overlays := []string{"dev", "stagig", "prod"}
-	err := DoMakeOverlay(testsource, overlays, testtarget, "ns")
+	err := DoMakeOverlay(testsource, overlays, testtarget, "ns", false)
 	if err != nil {
 		t.Errorf("Error in Test_simple_createtargetinsidesource %v", err)
 	}
@@ -228,6 +228,18 @@ func Test_exists(t *testing.T) {
 	}
 
 	goodTarget := t.TempDir()
+
+	exists, empty = targetExists(goodTarget)
+	if exists != true || empty != true {
+		t.Errorf("incorrect result for targetExists")
+	}
+
+	target := path.Join(goodTarget, "foo.txt")
+	bytes := []byte("hello")
+	err := ioutil.WriteFile(target, bytes, 0755)
+	if err != nil {
+		t.Errorf("bad write")
+	}
 
 	exists, empty = targetExists(goodTarget)
 	if exists != true || empty != false {

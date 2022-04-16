@@ -49,7 +49,7 @@ Scenario: `createlayers` functionality
     - [x] Fix version string
   - [x] Add layers create with flags and help
     - [x] Fix output flag
-    - [x] create output dir if doesn't exist 
+    - [x] create output dir if doesn't exist
     - [x] ignore it if inside source
     - [x] Support no output flag passed in with absolute sourcedir
     - [x] Support . for sourcedir
@@ -83,12 +83,17 @@ Scenario: prep MVP release
 1. how to test multiple cobra commands / switch structures
 2. how to run integration test in GA or circleci
 
+MVP
+create kustomize from manifests in dir
+clean deployment / service
+overlay
+
 Backlog:
 Scenario: implement function to strip ?hard-coded app name/namespaces from original manifests
 write unit test for namespace stripping with yaml comparison with known failure case
 Scenario: `kubectl create deployement` then clean
 write integration test for MakeOverlay that compares output with known good yaml that runs in prod to test functional correctness
-command to add a kustomization.yaml and populate with all validd manifests.  If one exists, update manifest list based on what's in dir
+command to add a kustomization.yaml and populate with all validd manifests. If one exists, update manifest list based on what's in dir
 Add colorization to output
 Output shows treestructure that was created
 If there is a namespace file used to create namespace, patch that with passed in namespace

@@ -1,6 +1,7 @@
 package refactor
 
 import (
+	"bufio"
 	"fmt"
 	"html/template"
 	"io"
@@ -16,15 +17,21 @@ import (
 	. "sigs.k8s.io/kustomize/kyaml/yaml"
 )
 
-func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, namespace string) error {
+func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, namespace string, checkout bool) error {
 	shouldReturn, returnValue := validateArgs(sourceDir, overlayList)
 
 	if shouldReturn {
 		return returnValue
 	}
 
-	expandDir(&sourceDir)
-	expandDir(&targetDir)
+	err := expandDir(&sourceDir)
+	if err != nil {
+		return err
+	}
+	err = expandDir(&targetDir)
+	if err != nil {
+		return err
+	}
 
 	texists, tempty := targetExists(targetDir)
 
@@ -33,8 +40,21 @@ func DoMakeOverlay(sourceDir string, overlayList []string, targetDir string, nam
 		return nil
 	}
 
-	if !tempty {
-		fmt.Printf("Output dir %v is not empty.  Are you sure? y/n", targetDir)
+	if checkout {
+		if !tempty {
+			fmt.Printf("Output dir %v is not empty.  Are you sure? y/n", targetDir)
+		}
+
+		reader := bufio.NewReader(os.Stdin)
+		text, err := reader.ReadString('\n')
+
+		if err != nil {
+			return err
+		}
+
+		if !strings.HasPrefix(text, "y") {
+			os.Exit(0)
+		}
 	}
 
 	if !texists {

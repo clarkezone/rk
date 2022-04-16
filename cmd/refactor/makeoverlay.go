@@ -18,7 +18,7 @@ func MakeOverlay() *cobra.Command {
 				"/home/james/src/github.com/clarkezone/JekyllPreview/k8s/full",
 				[]string{"dev", "staging", "prod"},
 				"/home/james/src/github.com/clarkezone/JekyllPreview/k8s/layered",
-				"JekyllPreviewV2")
+				"JekyllPreviewV2", true)
 			//	getCurrentDir())
 			//			return refactorCMD.DoMakeOverlay(
 			//				getCurrentDir(),
