@@ -58,6 +58,8 @@ Scenario: `createlayers` functionality
     - [ ] test for updateoutput
   - [x] Make command to install with version
 - [ ] Goal: fix CI official build based on tags
+  - [ ] Investigate dyff releaser
+  - [ ] Add missing badges
 - [ ] Goal: add suggestions to make authoring overrides easier in overlay layer
   - [ ] Add commented out reference in respective overlay folder
   - [x] Refactor `writeOverlayKustTemplate` so that path concatenation is inside function
