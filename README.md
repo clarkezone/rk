@@ -70,7 +70,7 @@ Scenario: `createlayers` functionality
     - [x] get deployment name using kyaml
     - [x] get container names using kyaml
     - [x] write unit test for function to get deployment and container names
-
+- [ ] Scenario: add kustomize to bare manifests
 Scenario: prep MVP release
 
 - [ ] Goal: get CD using same matrixed build versions. Hook up download counter to build
