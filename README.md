@@ -97,4 +97,4 @@ Output shows treestructure that was created
 If there is a namespace file used to create namespace, patch that with passed in namespace
 If there is no namespace file, createone
 CLEANUP existing manifests: strip redundant namespace fields
-Enable limits optionally via flag
+Enable limits optionally via flag.
