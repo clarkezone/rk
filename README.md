@@ -81,6 +81,11 @@ Scenario: prep MVP release
 - [ ] converge CI build with make script
 - [ ] show build badges ()
 
+# Blocking bugs
+1. prompting output exists when it doesn't
+2. presense of a config folder with items with .yaml causes error
+3. if manifests are not name deployment.yaml, service.yaml etc breaks
+
 # figure out
 
 1. how to test multiple cobra commands / switch structures
