@@ -68,7 +68,7 @@ func Test_simple(t *testing.T) {
 
 	basepath := path.Join(testtarget, "base")
 	files, err = ioutil.ReadDir(basepath)
-	if len(files) != 3 {
+	if len(files) != 4 {
 		t.Errorf("Target file count is wrong")
 	}
 	if err != nil {
