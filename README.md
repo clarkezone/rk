@@ -85,6 +85,7 @@ Scenario: prep MVP release
 1. prompting output exists when it doesn't
 2. presense of a config folder with items with .yaml causes error
 3. if manifests are not name deployment.yaml, service.yaml etc breaks
+4. .gitignore handled incorrectly (should end up in root not base)
 
 # figure out
 
